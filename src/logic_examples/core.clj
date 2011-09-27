@@ -103,6 +103,7 @@
   (pluso m k n))
 
 (defn =lo [n m]
+  (println "=lo")
   (exist [x xs y ys]
          (matche [n m]
                  ([() ()])
@@ -113,6 +114,7 @@
                     (=lo xs ys)))))
 
 (defn <lo [n m]
+  (println "<lo")
   (exist [x xs y ys]
          (matche [n m]
                  ([[] _] (poso m))
@@ -121,6 +123,17 @@
                     (poso xs)
                     (poso ys)
                     (<lo xs ys)))))
+
+(defn >lo [n m]
+  (println ">lo")
+  (exist [x xs y ys]
+         (matche [n m]
+                 ([_ []] (poso n))
+                 ([_ [1]] (>1o n))
+                 ([[x . xs] [y . ys]]
+                    (poso xs)
+                    (poso ys)
+                    (>lo xs ys)))))
 
 (defn <=lo [n m]
   (conde
@@ -178,6 +191,54 @@
              (== q [ [shoe-ee shoe-ff shoe-pp shoe-ss]
                      [store-hh store-ff store-sp store-t]])))
 ;([[(0 1) (0 0 1) (1) (1 1)] [(0 0 1) (0 1) (1) (1 1)]])
+
+
+(defrel father Father Son)
+(defrel mother Mother Son)
+(defrel brother Brother Sib)
+(defrel male M)
+(defrel female F)
+
+(defn parent [p child]
+  (conde
+   ((father p child))
+   ((mother p child))))
+
+(defn brother [bro sib]
+  (exist [p]
+         (parent p bro)
+         (parent p sib)
+         (male bro)
+         (!= bro sib)))
+
+(defn uncle [u person]
+  (exist [p]
+         (brother u p)
+         (parent p person)))
+
+(facts father [['terach 'abraham]
+               ['terach 'nachor]
+               ['terach 'haran]
+               ['abraham 'isaac]
+               ['haran 'lot]
+               ['haran 'milcah]
+               ['haran 'yiscah]
+               ['sarah 'isaac]])
+
+(facts male (map list ['terach
+                       'abraham
+                       'nachor
+                       'haran
+                       'isaac
+                       'lot
+                       'sarah
+                       'milcah
+                       'yiscah]))
+
+
+
+
+
 
 
 
