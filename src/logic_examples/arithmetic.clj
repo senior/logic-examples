@@ -1,7 +1,6 @@
-(ns logic-examples.core
+(ns logic-examples.arithmetic
   (:refer-clojure :exclude [inc reify ==])
   (:use [clojure.core.logic minikanren prelude nonrel match disequality]))
-
 
 (defn build-num [n]
   (cond
@@ -104,33 +103,33 @@
 
 (defn =lo [n m]
   (println "=lo")
-  (exist [x xs y ys]
+  (exist [xs ys]
          (matche [n m]
                  ([() ()])
                  ([[1] [1]])
-                 ([[x . xs] [y . ys]]
+                 ([[_ . xs] [_ . ys]]
                     (poso xs)
                     (poso ys)
                     (=lo xs ys)))))
 
 (defn <lo [n m]
   (println "<lo")
-  (exist [x xs y ys]
+  (exist [xs ys]
          (matche [n m]
                  ([[] _] (poso m))
                  ([[1] _] (>1o m))
-                 ([[x . xs] [y . ys]]
+                 ([[_ . xs] [_ . ys]]
                     (poso xs)
                     (poso ys)
                     (<lo xs ys)))))
 
 (defn >lo [n m]
   (println ">lo")
-  (exist [x xs y ys]
+  (exist [xs ys]
          (matche [n m]
                  ([_ []] (poso n))
                  ([_ [1]] (>1o n))
-                 ([[x . xs] [y . ys]]
+                 ([[_ . xs] [_ . ys]]
                     (poso xs)
                     (poso ys)
                     (>lo xs ys)))))
@@ -139,108 +138,4 @@
   (conde
    ((=lo n m))
    ((<lo n m))))
-
-(defn rangeo [a max]
-  (conde
-   ((>1o a))
-   ((<=lo a max))))
-
-(defn !=anyo [item items]
-  (exist [x xs]
-         (matche [items]
-                 ([[x . xs]]
-                    (!= item x)
-                    (!=anyo item xs))
-                 ([()] s#))))
-
-(defn differento [items]
-  (exist [x xs]
-         (matche [items]
-                 ([[x . xs]]
-                    (!=anyo x xs)
-                    (differento xs))
-                 ([()] s#))))
-
-(defn ino [n r]
-  (exist [x xs]
-         (matche [r]
-                 ([[n . xs]])
-                 ([[_ . xs]] (ino n xs)))))
-
-(defn all-ino [ns r]
-  (exist [a b]
-   (matche [ns]
-           ([()])
-           ([[a . b]]
-              (ino a r)
-              (all-ino b r)))))
-
-#_(run* [q]
-      (exist [shoe-ee shoe-ff shoe-pp shoe-ss
-              store-hh store-ff store-sp store-t possible-values x]
-             (== possible-values [(build-num 1) (build-num 2) (build-num 3) (build-num 4)])
-             (all-ino [shoe-ee shoe-ff shoe-pp shoe-ss] possible-values)
-             (all-ino [store-hh store-ff store-sp store-t] possible-values)
-             (differento [shoe-ee shoe-ff shoe-pp shoe-ss])
-             (differento [store-hh store-ff store-sp store-t])
-             (== shoe-ff store-hh)
-             (pluso shoe-pp (build-num 1) x)
-             (!= x store-t)
-             (== (build-num 2) store-ff)
-             (pluso store-sp (build-num 2) shoe-ss)
-             (== q [ [shoe-ee shoe-ff shoe-pp shoe-ss]
-                     [store-hh store-ff store-sp store-t]])))
-;([[(0 1) (0 0 1) (1) (1 1)] [(0 0 1) (0 1) (1) (1 1)]])
-
-
-(defrel father Father Son)
-(defrel mother Mother Son)
-(defrel brother Brother Sib)
-(defrel male M)
-(defrel female F)
-
-(defn parent [p child]
-  (conde
-   ((father p child))
-   ((mother p child))))
-
-(defn brother [bro sib]
-  (exist [p]
-         (parent p bro)
-         (parent p sib)
-         (male bro)
-         (!= bro sib)))
-
-(defn uncle [u person]
-  (exist [p]
-         (brother u p)
-         (parent p person)))
-
-(facts father [['terach 'abraham]
-               ['terach 'nachor]
-               ['terach 'haran]
-               ['abraham 'isaac]
-               ['haran 'lot]
-               ['haran 'milcah]
-               ['haran 'yiscah]
-               ['sarah 'isaac]])
-
-(facts male (map list ['terach
-                       'abraham
-                       'nachor
-                       'haran
-                       'isaac
-                       'lot
-                       'sarah
-                       'milcah
-                       'yiscah]))
-
-
-
-
-
-
-
-
-
 
