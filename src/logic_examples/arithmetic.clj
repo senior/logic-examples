@@ -17,7 +17,7 @@
 
 ;; First version of pluso from miniKanren paper
 #_(defn pluso [n m s]
-  (exist [b res x y z]
+  (fresh [b res x y z]
    (matche [n m s]
            ([x () x])
            ([() (x . y) (x . y)])
@@ -32,7 +32,7 @@
               (poso y)
               (pluso x y res))
            ([[1 . x] [1 . y] [0 . res]]
-              (exist [res-1]
+              (fresh [res-1]
                      (pluso x y res-1)
                      (pluso [1] res-1 res))))))
 
@@ -49,12 +49,12 @@
   ([0 0 0]))
 
 (defn half-addero [x y r c]
-  (exist []
+  (fresh []
          (bit-xoro x y r)
          (bit-ando x y c)))
 
 (defn full-addero [b x y r c]
-  (exist [w xy wz]
+  (fresh [w xy wz]
          (half-addero x y w xy)
          (half-addero w b r wz)
          (bit-xoro xy wz c)))
@@ -63,7 +63,7 @@
 
 (defne gen-addero [d n m r]
   ([_ [?a . ?x] [?b . ?y] [?c . ?z]]
-     (exist [e]
+     (fresh [e]
             (poso ?y)
             (poso ?z)
             (full-addero d ?a ?b ?c e)
@@ -75,7 +75,7 @@
   ([1 _ () _] (addero 0 n [1] r))
   ([1 () _ _] (poso m) (addero 0 [1] m r))
   ([_ [1] [1] _]
-     (exist [a c]
+     (fresh [a c]
             (== [a c] r)
             (full-addero d 1 1 a c)))
   ([_ [1] _ _]

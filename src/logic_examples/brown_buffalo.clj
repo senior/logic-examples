@@ -30,7 +30,7 @@
 
 (defn problem-1 []
   (run* [q]
-        (exist [shoe-ee shoe-ff shoe-pp shoe-ss
+        (fresh [shoe-ee shoe-ff shoe-pp shoe-ss
                 store-hh store-ff store-sp store-t x]
                (all-ino [shoe-ee shoe-ff shoe-pp shoe-ss store-hh store-ff store-sp store-t]
                         (map ar/build-num (range 1 5)))

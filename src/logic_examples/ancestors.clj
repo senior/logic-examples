@@ -14,14 +14,14 @@
    ((mother p child))))
 
 (defn brother [bro sib]
-  (exist [p]
+  (fresh [p]
          (parent p bro)
          (parent p sib)
          (male bro)
          (!= bro sib)))
 
 (defn uncle [u person]
-  (exist [p]
+  (fresh [p]
          (brother u p)
          (parent p person)))
 
