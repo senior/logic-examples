@@ -8,6 +8,16 @@
    (and (even? n) (not (zero? n)))  (cons 0 (build-num (/ n 2)))
    (odd? n) (cons 1 (build-num (/ (dec n) 2)))))
 
+(defn remove* [pred & colls]
+  (remove pred (apply map list colls)))
+
+(def powers-o-two (iterate #(* 2 %) 1))
+
+(defn spit-number [n]
+  (reduce (fn [acc [num ptwo]]
+            (+ acc (* num ptwo)))
+          0 (remove* (comp zero? first) n powers-o-two)))
+
 
 (defne poso [x]
   ([[_ . _]]))

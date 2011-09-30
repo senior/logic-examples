@@ -29,18 +29,19 @@
 
 
 (defn problem-1 []
-  (run* [q]
-        (fresh [shoe-ee shoe-ff shoe-pp shoe-ss
-                store-hh store-ff store-sp store-t x]
-               (all-ino [shoe-ee shoe-ff shoe-pp shoe-ss store-hh store-ff store-sp store-t]
-                        (map ar/build-num (range 1 5)))
-               (differento [shoe-ee shoe-ff shoe-pp shoe-ss])
-               (differento [store-hh store-ff store-sp store-t])
-               (== shoe-ff store-hh)
-               (ar/pluso shoe-pp (ar/build-num 1) x)
-               (!= x store-t)
-               (== (ar/build-num 2) store-ff)
-               (ar/pluso store-sp (ar/build-num 2) shoe-ss)
-               (== q [ [shoe-ee shoe-ff shoe-pp shoe-ss]
-                       [store-hh store-ff store-sp store-t]]))))
+  (map #(map ar/spit-number %)
+       (first (run* [q]
+                    (fresh [shoe-ee shoe-ff shoe-pp shoe-ss
+                            store-hh store-ff store-sp store-t x]
+                           (all-ino [shoe-ee shoe-ff shoe-pp shoe-ss store-hh store-ff store-sp store-t]
+                                    (map ar/build-num (range 1 5)))
+                           (differento [shoe-ee shoe-ff shoe-pp shoe-ss])
+                           (differento [store-hh store-ff store-sp store-t])
+                           (== shoe-ff store-hh)
+                           (ar/pluso shoe-pp (ar/build-num 1) x)
+                           (!= x store-t)
+                           (== (ar/build-num 2) store-ff)
+                           (ar/pluso store-sp (ar/build-num 2) shoe-ss)
+                           (== q [ [shoe-ee shoe-ff shoe-pp shoe-ss]
+                                   [store-hh store-ff store-sp store-t]]))))))
 ;([[(0 1) (0 0 1) (1) (1 1)] [(0 0 1) (0 1) (1) (1 1)]])
