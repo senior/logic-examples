@@ -5,43 +5,35 @@
 
 ;; Some CLP(FD) problem(s) in miniKanren from http://brownbuffalo.sourceforge.net/
 
-(defn !=anyo [item items]
-  (exist [x xs]
-         (matche [items]
-                 ([[x . xs]]
-                    (!= item x)
-                    (!=anyo item xs))
-                 ([()] s#))))
+(defne !=anyo [item items]
+  ([_ [?x . ?xs]]
+     (!= item ?x)
+     (!=anyo item ?xs))
+  ([_ ()]))
 
-(defn differento [items]
-  (exist [x xs]
-         (matche [items]
-                 ([[x . xs]]
-                    (!=anyo x xs)
-                    (differento xs))
-                 ([()] s#))))
+(defne differento [items]
+  ([[?x . ?xs]]
+     (!=anyo ?x ?xs)
+     (differento ?xs))
+  ([()]))
 
-(defn ino [n r]
-  (exist [x xs]
-         (matche [r]
-                 ([[n . xs]])
-                 ([[_ . xs]] (ino n xs)))))
+(defne ino [n r]
+  ([_ [n . ?xs]])
+  ([_ [_ . ?xs]] (ino n ?xs)))
 
-(defn all-ino [ns r]
-  (exist [a b]
-   (matche [ns]
-           ([()])
-           ([[a . b]]
-              (ino a r)
-              (all-ino b r)))))
+(defne all-ino [ns r]
+  ([() _])
+  ([[?a . ?b] _]
+     (ino ?a r)
+     (all-ino ?b r)))
+
 
 (defn problem-1 []
   (run* [q]
         (exist [shoe-ee shoe-ff shoe-pp shoe-ss
-                store-hh store-ff store-sp store-t possible-values x]
-               (== possible-values (map ar/build-num (range 1 5)))
-               (all-ino [shoe-ee shoe-ff shoe-pp shoe-ss
-                               store-hh store-ff store-sp store-t] possible-values)
+                store-hh store-ff store-sp store-t x]
+               (all-ino [shoe-ee shoe-ff shoe-pp shoe-ss store-hh store-ff store-sp store-t]
+                        (map ar/build-num (range 1 5)))
                (differento [shoe-ee shoe-ff shoe-pp shoe-ss])
                (differento [store-hh store-ff store-sp store-t])
                (== shoe-ff store-hh)

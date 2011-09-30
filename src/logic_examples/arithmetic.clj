@@ -9,13 +9,11 @@
    (odd? n) (cons 1 (build-num (/ (dec n) 2)))))
 
 
-(defn poso [x]
-  (matche [x]
-          ([[_ . _]] s#)))
+(defne poso [x]
+  ([[_ . _]]))
 
-(defn >1o [x]
-  (matche [x]
-          ([[_ _ . _]] s#)))
+(defne >1o [x]
+  ([[_ _ . _]]))
 
 ;; First version of pluso from miniKanren paper
 #_(defn pluso [n m s]
@@ -38,19 +36,17 @@
                      (pluso x y res-1)
                      (pluso [1] res-1 res))))))
 
-(defn bit-xoro [x y r]
-  (matche [x y r]
-          ([1 1 0])
-          ([0 1 1])
-          ([1 0 1])
-          ([0 0 0])))
+(defne bit-xoro [x y r]
+  ([1 1 0])
+  ([0 1 1])
+  ([1 0 1])
+  ([0 0 0]))
 
-(defn bit-ando [x y c]
-  (matche [x y c]
-          ([1 1 1])
-          ([0 1 0])
-          ([1 0 0])
-          ([0 0 0])))
+(defne bit-ando [x y c]
+  ([1 1 1])
+  ([0 1 0])
+  ([1 0 0])
+  ([0 0 0]))
 
 (defn half-addero [x y r c]
   (exist []
@@ -65,35 +61,32 @@
 
 (declare addero)
 
-(defn gen-addero [d n m r]
-  (exist [a b c x y z]
-         (matche [n m r]
-                 ([[a . x] [b . y] [c . z]]
-                    (exist [e]
-                           (poso y)
-                           (poso z)
-                           (full-addero d a b c e)
-                           (addero e x y z))))))
+(defne gen-addero [d n m r]
+  ([_ [?a . ?x] [?b . ?y] [?c . ?z]]
+     (exist [e]
+            (poso ?y)
+            (poso ?z)
+            (full-addero d ?a ?b ?c e)
+            (addero e ?x ?y ?z))))
 
-(defn addero [d n m r]
-  (matche [d n m]
-          ([0 _ ()] (== n r))
-          ([0 () _] (== m r) (poso m))
-          ([1 _ ()] (addero 0 n [1] r))
-          ([1 () _] (poso m) (addero 0 [1] m r))
-          ([_ [1] [1]]
-             (exist [a c]
-                    (== [a c] r)
-                    (full-addero d 1 1 a c)))
-          ([_ [1] _]
-             (gen-addero d n m r))
-          ([_ _ [1]]
-             (>1o n)
-             (>1o r)
-             (addero d [1] n r))
-          ([_ _ _]
-             (>1o n)
-             (gen-addero d n m r))))
+(defne addero [d n m r]
+  ([0 _ () _] (== n r))
+  ([0 () _ _] (== m r) (poso m))
+  ([1 _ () _] (addero 0 n [1] r))
+  ([1 () _ _] (poso m) (addero 0 [1] m r))
+  ([_ [1] [1] _]
+     (exist [a c]
+            (== [a c] r)
+            (full-addero d 1 1 a c)))
+  ([_ [1] _ _]
+     (gen-addero d n m r))
+  ([_ _ [1] _]
+     (>1o n)
+     (>1o r)
+     (addero d [1] n r))
+  ([_ _ _ _]
+     (>1o n)
+     (gen-addero d n m r)))
 
 (defn pluso [n m k]
   (addero 0 n m k))
@@ -101,38 +94,29 @@
 (defn minuso [n m k]
   (pluso m k n))
 
-(defn =lo [n m]
-  (println "=lo")
-  (exist [xs ys]
-         (matche [n m]
-                 ([() ()])
-                 ([[1] [1]])
-                 ([[_ . xs] [_ . ys]]
-                    (poso xs)
-                    (poso ys)
-                    (=lo xs ys)))))
+(defne =lo [n m]
+  ([() ()])
+  ([[1] [1]])
+  ([[_ . ?xs] [_ . ?ys]]
+     (poso ?xs)
+     (poso ?ys)
+     (=lo ?xs ?ys)))
 
-(defn <lo [n m]
-  (println "<lo")
-  (exist [xs ys]
-         (matche [n m]
-                 ([[] _] (poso m))
-                 ([[1] _] (>1o m))
-                 ([[_ . xs] [_ . ys]]
-                    (poso xs)
-                    (poso ys)
-                    (<lo xs ys)))))
+(defne <lo [n m]
+  ([[] _] (poso m))
+  ([[1] _] (>1o m))
+  ([[_ . ?xs] [_ . ?ys]]
+     (poso ?xs)
+     (poso ?ys)
+     (<lo ?xs ?ys)))
 
-(defn >lo [n m]
-  (println ">lo")
-  (exist [xs ys]
-         (matche [n m]
-                 ([_ []] (poso n))
-                 ([_ [1]] (>1o n))
-                 ([[_ . xs] [_ . ys]]
-                    (poso xs)
-                    (poso ys)
-                    (>lo xs ys)))))
+(defne >lo [n m]
+  ([_ []] (poso n))
+  ([_ [1]] (>1o n))
+  ([[_ . ?xs] [_ . ?ys]]
+     (poso ?xs)
+     (poso ?ys)
+     (>lo ?xs ?ys)))
 
 (defn <=lo [n m]
   (conde
