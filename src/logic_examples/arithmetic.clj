@@ -107,7 +107,7 @@
 (defne =lo [n m]
   ([() ()])
   ([[1] [1]])
-  ([[_ . ?xs] [_ . ?ys]]
+  ([[?x . ?xs] [?x . ?ys]]
      (poso ?xs)
      (poso ?ys)
      (=lo ?xs ?ys)))
@@ -115,6 +115,10 @@
 (defne <lo [n m]
   ([[] _] (poso m))
   ([[1] _] (>1o m))
+  ([[0 . ?xs] [1 . ?ys]]
+     (poso ?xs)
+     (poso ?ys)
+     (=lo ?xs ?ys))
   ([[_ . ?xs] [_ . ?ys]]
      (poso ?xs)
      (poso ?ys)

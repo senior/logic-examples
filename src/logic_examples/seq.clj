@@ -43,7 +43,7 @@
          (appendo a (llist x y b) z)))
 
 (defne reverseo [xs ys]
-  ([[] _] (== ys []))
+  ([[] []])
   ([[?x . ?xs] _]
      (fresh [a]
             (reverseo ?xs a)
