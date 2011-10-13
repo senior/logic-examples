@@ -1,7 +1,6 @@
 (ns logic-examples.seq
   (:refer-clojure :exclude [inc reify ==])
-  (:use [clojure.core.logic minikanren prelude nonrel match disequality]
-        [logic-examples.arithmetic]))
+  (:use [clojure.core.logic minikanren prelude nonrel match disequality]))
 
 (defne prefixo [x y]
   ([[?a . ?xs] [?a . ?ys]] (prefixo ?xs ?ys))
@@ -25,22 +24,31 @@
          (prefixo a y)
          (suffixo x a)))
 
-(defn sublisto2 [x y]
+(defn sublisto2
+  "The list x (in sequence) appears in y"
+  [x y]
   (fresh [a b c]
          (appendo a b y)
          (appendo x c b)))
-
-(defn my-membero [x y]
+(defn my-membero
+  "A (probably inefficient) function stating x is an element in y"
+  [x y]
   (fresh [a b]
          (appendo a (llist x b) y)))
 
-(defn lasto [x y]
+(defn lasto
+  "Declares x as the last item in y"
+  [x y]
   (fresh [a]
          (appendo a [x] y)))
 
-(defn adjacent [x y z]
+(defn adjacent
+  "Declares x and y as adjacent items in list z"
+  [x y z]
   (fresh [a b]
-         (appendo a (llist x y b) z)))
+         (conde
+          ((appendo a (llist x y b) z))
+          ((appendo a (llist y x b) z)))))
 
 (defne reverseo [xs ys]
   ([[] []])
